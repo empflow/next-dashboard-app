@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { lusitana } from "@/app/ui/fonts";
 import cn from "@/app/lib/cn";
 
 interface Breadcrumb {
@@ -15,7 +14,7 @@ export default function Breadcrumbs({
 }) {
   return (
     <nav aria-label="Breadcrumb" className="mb-6 block">
-      <ol className={cn(lusitana.className, "flex text-xl md:text-2xl")}>
+      <ol className={cn("flex text-xl md:text-2xl")}>
         {breadcrumbs.map((breadcrumb, index) => (
           <li
             key={breadcrumb.href}
