@@ -34,8 +34,14 @@ export default function Page() {
             alt="Hero image"
             src={heroDesktop}
             className="hidden md:block"
+            loading="eager"
           />
-          <Image alt="Hero image" src={heroMobile} className="md:hidden" />
+          <Image
+            alt="Hero image"
+            src={heroMobile}
+            className="md:hidden"
+            loading="eager"
+          />
           hello
         </div>
       </div>
