@@ -10,7 +10,9 @@ import {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 
+// TODO: cache these functions
 export async function fetchRevenue() {
+  console.log("fetching revenue...");
   try {
     return (await sql<Revenue>`SELECT * FROM revenue`).rows;
   } catch (error) {
