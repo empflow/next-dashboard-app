@@ -1,8 +1,7 @@
-import { Card } from "@/app/ui/dashboard/cards";
+// import { Card } from "@/app/ui/dashboard/cards";
 import RevenueChart from "@/app/ui/dashboard/revenue-chart";
 import LatestInvoices from "@/app/ui/dashboard/latest-invoices";
 import { Suspense } from "react";
-import { fetchRevenue } from "../lib/data";
 
 export default async function Page() {
   return (
@@ -22,7 +21,9 @@ export default async function Page() {
         <Suspense fallback="Loading revenue...">
           <RevenueChart />
         </Suspense>
-        {/* <LatestInvoices latestInvoices={latestInvoices} /> */}
+        <Suspense fallback="Loading latest invoices...">
+          <LatestInvoices />
+        </Suspense>
       </div>
     </main>
   );
