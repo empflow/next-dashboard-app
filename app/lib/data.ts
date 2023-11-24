@@ -10,19 +10,17 @@ import {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 import { cache } from "react";
-import wait from "./wait";
 
-// TODO: cache these functions
-export async function fetchRevenue() {
+export const fetchRevenue = cache(async () => {
   try {
     return (await sql<Revenue>`SELECT * FROM revenue`).rows;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch revenue data.");
   }
-}
+});
 
-export async function fetchLatestInvoices() {
+export const fetchLatestInvoices = cache(async () => {
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT
@@ -44,7 +42,7 @@ export async function fetchLatestInvoices() {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch the latest invoices.");
   }
-}
+});
 
 export const fetchCardsData = cache(async function () {
   try {
@@ -79,14 +77,12 @@ export const fetchCardsData = cache(async function () {
 });
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number
-) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+export const fetchFilteredInvoices = cache(
+  async (query: string, currentPage: number) => {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  try {
-    const invoices = await sql<InvoicesTable>`
+    try {
+      const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
         invoices.amount,
@@ -107,14 +103,15 @@ export async function fetchFilteredInvoices(
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch invoices.");
+      return invoices.rows;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch invoices.");
+    }
   }
-}
+);
 
-export async function fetchInvoicesPages(query: string) {
+export const fetchInvoicesPages = cache(async (query: string) => {
   try {
     const count = await sql`SELECT COUNT(*)
     FROM invoices
@@ -133,9 +130,9 @@ export async function fetchInvoicesPages(query: string) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of invoices.");
   }
-}
+});
 
-export async function fetchInvoiceById(id: string) {
+export const fetchInvoiceById = cache(async (id: string) => {
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -157,9 +154,9 @@ export async function fetchInvoiceById(id: string) {
   } catch (error) {
     console.error("Database Error:", error);
   }
-}
+});
 
-export async function fetchCustomers() {
+export const fetchCustomers = cache(async () => {
   try {
     const data = await sql<CustomerField>`
       SELECT
@@ -175,9 +172,9 @@ export async function fetchCustomers() {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch all customers.");
   }
-}
+});
 
-export async function fetchFilteredCustomers(query: string) {
+export const fetchFilteredCustomers = cache(async (query: string) => {
   try {
     const data = await sql<CustomersTable>`
 		SELECT
@@ -208,9 +205,9 @@ export async function fetchFilteredCustomers(query: string) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch customer table.");
   }
-}
+});
 
-export async function getUser(email: string) {
+export const getUser = cache(async (email: string) => {
   try {
     const user = await sql`SELECT * from USERS where email=${email}`;
     return user.rows[0] as User;
@@ -218,4 +215,4 @@ export async function getUser(email: string) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
   }
-}
+});
