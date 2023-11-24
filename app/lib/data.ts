@@ -10,19 +10,14 @@ import {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 import { cache } from "react";
+import { unstable_noStore } from "next/cache";
 
 export const fetchRevenue = cache(async () => {
-  try {
-    return (await sql<Revenue>`SELECT * FROM revenue`).rows;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch revenue data.");
-  }
+  return (await sql<Revenue>`SELECT * FROM revenue`).rows;
 });
 
 export const fetchLatestInvoices = cache(async () => {
-  try {
-    const data = await sql<LatestInvoiceRaw>`
+  const data = await sql<LatestInvoiceRaw>`
       SELECT
       i.id AS invoice_id,
       i.amount,
@@ -34,54 +29,46 @@ export const fetchLatestInvoices = cache(async () => {
       ORDER BY i.date DESC
       LIMIT 5`;
 
-    return data.rows.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
-    }));
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch the latest invoices.");
-  }
+  return data.rows.map((invoice) => ({
+    ...invoice,
+    amount: formatCurrency(invoice.amount),
+  }));
 });
 
 export const fetchCardsData = cache(async function () {
-  try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
+  console.log("fetching cards");
+  unstable_noStore();
+  const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+  const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+  const invoiceStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
+  const data = await Promise.all([
+    invoiceCountPromise,
+    customerCountPromise,
+    invoiceStatusPromise,
+  ]);
 
-    const invoicesAmount = Number(data[0].rows[0].count ?? "0");
-    const customersAmount = Number(data[1].rows[0].count ?? "0");
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? "0");
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? "0");
+  const invoicesAmount = Number(data[0].rows[0].count ?? "0");
+  const customersAmount = Number(data[1].rows[0].count ?? "0");
+  const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? "0");
+  const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? "0");
 
-    return {
-      customersAmount,
-      invoicesAmount,
-      totalPaidInvoices,
-      totalPendingInvoices,
-    };
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to card data.");
-  }
+  return {
+    customersAmount,
+    invoicesAmount,
+    totalPaidInvoices,
+    totalPendingInvoices,
+  };
 });
 
 const ITEMS_PER_PAGE = 6;
 export const fetchFilteredInvoices = cache(
   async (query: string, currentPage: number) => {
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
     try {
+      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
       const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
