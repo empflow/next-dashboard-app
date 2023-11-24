@@ -47,9 +47,7 @@ export async function fetchLatestInvoices() {
 }
 
 export const fetchCardsData = cache(async function () {
-  console.log("fetching cards data...");
   try {
-    await wait(20000);
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT

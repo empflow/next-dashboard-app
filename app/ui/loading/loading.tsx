@@ -1,11 +1,9 @@
-import styles from "./loading.module.css";
-
 export default function Loading() {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className={`w-10 h-10 text-gray-200 fill-blue-500 ${styles.loading}`}
+        className={`w-10 h-10 text-gray-200 fill-blue-500 animate-spin`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
