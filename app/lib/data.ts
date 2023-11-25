@@ -9,14 +9,22 @@ import {
   Revenue,
 } from "./definitions";
 import { formatCurrency } from "./utils";
-import { cache } from "react";
-import { unstable_noStore } from "next/cache";
+// `cache` from react is used to dedupe requests
+// `unstable_cache` from next is used to dedupe *and* cache requests
+import { cache as reactCache } from "react";
+import {
+  unstable_noStore as nextCacheNoStore,
+  // unstable_cache as nextCacheStore,
+} from "next/cache";
 
-export const fetchRevenue = cache(async () => {
-  return (await sql<Revenue>`SELECT * FROM revenue`).rows;
+export const fetchRevenue = reactCache(async () => {
+  nextCacheNoStore();
+  const data = (await sql<Revenue>`SELECT * FROM revenue`).rows;
+  return data;
 });
 
-export const fetchLatestInvoices = cache(async () => {
+export const fetchLatestInvoices = reactCache(async () => {
+  nextCacheNoStore();
   const data = await sql<LatestInvoiceRaw>`
       SELECT
       i.id AS invoice_id,
@@ -35,9 +43,8 @@ export const fetchLatestInvoices = cache(async () => {
   }));
 });
 
-export const fetchCardsData = cache(async function () {
-  console.log("fetching cards");
-  unstable_noStore();
+export const fetchCardsData = reactCache(async function () {
+  nextCacheNoStore();
   const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
   const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
   const invoiceStatusPromise = sql`SELECT
@@ -65,11 +72,11 @@ export const fetchCardsData = cache(async function () {
 });
 
 const ITEMS_PER_PAGE = 6;
-export const fetchFilteredInvoices = cache(
+export const fetchFilteredInvoices = reactCache(
   async (query: string, currentPage: number) => {
-    try {
-      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-      const invoices = await sql<InvoicesTable>`
+    nextCacheNoStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
         invoices.amount,
@@ -90,17 +97,13 @@ export const fetchFilteredInvoices = cache(
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-      return invoices.rows;
-    } catch (error) {
-      console.error("Database Error:", error);
-      throw new Error("Failed to fetch invoices.");
-    }
+    return invoices.rows;
   }
 );
 
-export const fetchInvoicesPages = cache(async (query: string) => {
-  try {
-    const count = await sql`SELECT COUNT(*)
+export const fetchInvoicesPages = reactCache(async (query: string) => {
+  nextCacheNoStore();
+  const count = await sql`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
@@ -111,17 +114,13 @@ export const fetchInvoicesPages = cache(async (query: string) => {
       invoices.status ILIKE ${`%${query}%`}
   `;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of invoices.");
-  }
+  const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+  return totalPages;
 });
 
-export const fetchInvoiceById = cache(async (id: string) => {
-  try {
-    const data = await sql<InvoiceForm>`
+export const fetchInvoiceById = reactCache(async (id: string) => {
+  nextCacheNoStore();
+  const data = await sql<InvoiceForm>`
       SELECT
         invoices.id,
         invoices.customer_id,
@@ -131,21 +130,18 @@ export const fetchInvoiceById = cache(async (id: string) => {
       WHERE invoices.id = ${id};
     `;
 
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
+  const invoice = data.rows.map((invoice) => ({
+    ...invoice,
+    // Convert amount from cents to dollars
+    amount: invoice.amount / 100,
+  }));
 
-    return invoice[0];
-  } catch (error) {
-    console.error("Database Error:", error);
-  }
+  return invoice[0];
 });
 
-export const fetchCustomers = cache(async () => {
-  try {
-    const data = await sql<CustomerField>`
+export const fetchCustomers = reactCache(async () => {
+  nextCacheNoStore();
+  const data = await sql<CustomerField>`
       SELECT
         id,
         name
@@ -153,17 +149,13 @@ export const fetchCustomers = cache(async () => {
       ORDER BY name ASC
     `;
 
-    const customers = data.rows;
-    return customers;
-  } catch (err) {
-    console.error("Database Error:", err);
-    throw new Error("Failed to fetch all customers.");
-  }
+  const customers = data.rows;
+  return customers;
 });
 
-export const fetchFilteredCustomers = cache(async (query: string) => {
-  try {
-    const data = await sql<CustomersTable>`
+export const fetchFilteredCustomers = reactCache(async (query: string) => {
+  nextCacheNoStore();
+  const data = await sql<CustomersTable>`
 		SELECT
 		  customers.id,
 		  customers.name,
@@ -181,25 +173,17 @@ export const fetchFilteredCustomers = cache(async (query: string) => {
 		ORDER BY customers.name ASC
 	  `;
 
-    const customers = data.rows.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
-    }));
+  const customers = data.rows.map((customer) => ({
+    ...customer,
+    total_pending: formatCurrency(customer.total_pending),
+    total_paid: formatCurrency(customer.total_paid),
+  }));
 
-    return customers;
-  } catch (err) {
-    console.error("Database Error:", err);
-    throw new Error("Failed to fetch customer table.");
-  }
+  return customers;
 });
 
-export const getUser = cache(async (email: string) => {
-  try {
-    const user = await sql`SELECT * from USERS where email=${email}`;
-    return user.rows[0] as User;
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
+export const getUser = reactCache(async (email: string) => {
+  nextCacheNoStore();
+  const user = await sql`SELECT * from USERS where email=${email}`;
+  return user.rows[0] as User;
 });
