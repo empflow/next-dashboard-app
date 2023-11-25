@@ -45,6 +45,9 @@ export default function Page() {
           hello
         </div>
       </div>
+      <Link href="/dashboard" className="text-blue-500 underline">
+        Dashboard
+      </Link>
     </main>
   );
 }
