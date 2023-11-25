@@ -4,6 +4,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "prod": "next build && next start",
     "lint": "next lint",
     "info": "next info",
     "seed": "node -r dotenv/config ./scripts/seed.js"
