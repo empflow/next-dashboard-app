@@ -1,4 +1,4 @@
-export default function makeArr(length: number) {
+export default function getIterable(length: number) {
   const result = [];
 
   for (let i = 0; i < length; i++) {
