@@ -1,12 +1,12 @@
 "use server";
 
-import { createInvoiceFormSchema } from "@/app/lib/zodSchemas";
+import { invoiceFormSchema } from "@/app/lib/zodSchemas";
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export default async function createInvoiceAction(formData: FormData) {
-  const { amount, customer_id, status } = createInvoiceFormSchema.parse({
+export default async function createInvoice(formData: FormData) {
+  const { amount, customer_id, status } = invoiceFormSchema.parse({
     customer_id: formData.get("customerId"),
     amount: formData.get("amount"),
     status: formData.get("status"),

@@ -5,7 +5,7 @@ export default function CreateInvoiceLoading() {
   return (
     <>
       <CreateInvoiceBreadcrumbs />
-      <Loading className="m-auto mt-10" />
+      <Loading className="m-auto mt-20" />
     </>
   );
 }

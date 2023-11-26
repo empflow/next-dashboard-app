@@ -73,14 +73,6 @@ export const customerFieldSchema = z.object({
 });
 export type CustomerField = z.infer<typeof customerFieldSchema>;
 
-export const invoiceFormSchema = z.object({
-  id: z.string(),
-  customer_id: z.string(),
-  amount: z.number(),
-  status: z.enum(["pending", "paid"]),
-});
-export type InvoiceForm = z.infer<typeof invoiceFormSchema>;
-
 export const invoiceSchema = z.object({
   id: z.string(),
   customer_id: z.string(),
@@ -90,7 +82,8 @@ export const invoiceSchema = z.object({
 });
 export type Invoice = z.infer<typeof invoiceSchema>;
 
-export const createInvoiceFormSchema = invoiceSchema.omit({
+export const invoiceFormSchema = invoiceSchema.omit({
   id: true,
   date: true,
 });
+export type InvoiceFormSchema = z.infer<typeof invoiceFormSchema>;
