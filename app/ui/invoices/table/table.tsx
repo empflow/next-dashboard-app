@@ -3,18 +3,27 @@ import { UpdateInvoice, DeleteInvoice } from "@/app/ui/invoices/buttons";
 import InvoiceStatus from "@/app/ui/invoices/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredInvoices } from "@/app/lib/data";
+import { ReactNode } from "react";
+
+export type InvoicesTableProps = {
+  query: string;
+  currPage: number;
+};
 
 export default async function InvoicesTable({
   query,
-  currentPage,
+  currPage,
 }: {
   query: string;
-  currentPage: number;
+  currPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const invoices = await fetchFilteredInvoices(query, currPage);
+  let content: ReactNode;
 
-  return (
-    <div className="mt-6 flow-root">
+  if (!invoices.length) {
+    content = <div>No invoices found. Try a different search.</div>;
+  } else {
+    content = (
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
@@ -119,6 +128,8 @@ export default async function InvoicesTable({
           </table>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <div className="mt-6 flow-root">{content}</div>;
 }

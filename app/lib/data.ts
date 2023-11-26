@@ -73,9 +73,9 @@ export const fetchCardsData = reactCache(async function () {
 
 const ITEMS_PER_PAGE = 6;
 export const fetchFilteredInvoices = reactCache(
-  async (query: string, currentPage: number) => {
+  async (query: string, currPage: number) => {
     nextCacheNoStore();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const offset = (currPage - 1) * ITEMS_PER_PAGE;
     const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
