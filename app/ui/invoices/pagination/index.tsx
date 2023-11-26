@@ -1,4 +1,4 @@
-import PaginationContent from "./pagination-content";
+import PaginationContent from "./content";
 import { fetchInvoicesPages } from "@/app/lib/data";
 
 type Props = {
@@ -7,6 +7,5 @@ type Props = {
 
 export default async function Pagination({ query }: Props) {
   const totalPages = await fetchInvoicesPages(query);
-
   return <PaginationContent totalPages={totalPages} />;
 }

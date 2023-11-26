@@ -1,6 +1,6 @@
 import Search from "@/app/ui/search";
 import { CreateInvoice } from "@/app/ui/invoices/buttons";
-import PaginationWrapper from "@/app/ui/invoices/pagination/pagination-wrapper";
+import PaginationWrapper from "@/app/ui/invoices/pagination/wrapper";
 import InvoicesTableWrapper from "@/app/ui/invoices/table/table-wrapper";
 
 type Params = {

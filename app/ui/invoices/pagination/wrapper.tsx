@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import Pagination from "./pagination";
+import Pagination from ".";
+import { PaginationSkeleton } from "../../skeletons";
 
 type Props = {
   query: string;
@@ -8,7 +9,7 @@ type Props = {
 export default function PaginationWrapper({ query }: Props) {
   return (
     <div className="mt-5 flex w-full justify-center">
-      <Suspense fallback={"Loading pagination..."}>
+      <Suspense fallback={<PaginationSkeleton />}>
         <Pagination query={query} />
       </Suspense>
     </div>
