@@ -42,7 +42,6 @@ export default function Page() {
             className="md:hidden"
             loading="eager"
           />
-          hello
         </div>
       </div>
       <Link href="/dashboard" className="text-blue-500 underline">
