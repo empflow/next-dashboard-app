@@ -7,12 +7,15 @@ import {
   LatestInvoicesSkeleton,
   RevenueChartSkeleton,
 } from "../../ui/skeletons";
+import wait from "@/app/lib/wait";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default function Page() {
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
   return (
     <main>
       <h1 className={`mb-4 text-xl md:text-2xl`}>Dashboard</h1>
