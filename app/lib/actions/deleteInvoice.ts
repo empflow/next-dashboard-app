@@ -3,6 +3,10 @@ import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 
 export default async function deleteInvoiceAction(id: string) {
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
+  try {
+    await sql`DELETE FROM invoices WHERE id = ${id}`;
+  } catch (err) {
+    console.error(err);
+  }
   revalidatePath("/dashboard/invoices");
 }
