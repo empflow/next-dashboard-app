@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export default async function createInvoice(formData: FormData) {
-  throw new Error("fuck your nextjs 14 application!!!");
   try {
     const { amount, customer_id, status } = invoiceFormSchema.parse({
       customer_id: formData.get("customerId"),
