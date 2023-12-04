@@ -6,7 +6,6 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { CustomerField, Invoice } from "@/app/lib/zodSchemas";
 import { updateInvoice as updateInvoiceWithoutId } from "@/app/dashboard/invoices/[id]/edit/updateInvoiceAction";
 import { fetchCustomers, fetchInvoiceById } from "@/app/lib/data";
 
