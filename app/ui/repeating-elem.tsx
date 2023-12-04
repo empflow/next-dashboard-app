@@ -8,11 +8,5 @@ type Props = {
 
 export default function RepeatingElem({ elem, count }: Props) {
   const iterable = getIterable(count);
-  return (
-    <>
-      {iterable.map((_, i) => (
-        <>{cloneElement(elem, { key: i })}</>
-      ))}
-    </>
-  );
+  return iterable.map((_, i) => cloneElement(elem, { key: i }));
 }
