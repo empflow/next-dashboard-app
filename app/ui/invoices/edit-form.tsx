@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { updateInvoice as updateInvoiceWithoutId } from "@/app/dashboard/invoices/[id]/edit/updateInvoiceAction";
 import { fetchCustomers, fetchInvoiceById } from "@/app/lib/data";
+import { notFound } from "next/navigation";
 
 type Props = {
   id: string;
@@ -18,6 +19,7 @@ export default async function EditInvoiceForm({ id }: Props) {
     fetchInvoiceById(id),
     fetchCustomers(),
   ]);
+  if (!invoice) notFound();
 
   const updateInvoice = updateInvoiceWithoutId.bind(null, invoice.id);
   return (
