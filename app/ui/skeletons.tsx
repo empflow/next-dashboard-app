@@ -1,3 +1,8 @@
+import cn from "../lib/cn";
+import PaginationArrow from "./invoices/pagination/arrow";
+import PaginationNumber from "./invoices/pagination/number";
+import RepeatingElem from "./repeating-elem";
+
 // Loading animation
 const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
@@ -214,5 +219,38 @@ export function InvoicesTableSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function PaginationSkeleton() {
+  return (
+    <div className="flex">
+      <PaginationArrowSkeleton direction="left" />
+      <div className="flex">
+        <PaginationNumberSkeleton className="rounded-l-md" />
+        <RepeatingElem count={4} elem={<PaginationNumberSkeleton />} />
+        <PaginationNumberSkeleton className="rounded-r-md" />
+      </div>
+      <PaginationArrowSkeleton direction="right" />
+    </div>
+  );
+}
+
+function PaginationArrowSkeleton({
+  direction,
+}: {
+  direction: "left" | "right";
+}) {
+  return <PaginationArrow direction={direction} isDisabled={true} />;
+}
+
+function PaginationNumberSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "flex h-10 w-10 items-center justify-center text-sm border",
+        className
+      )}
+    ></div>
   );
 }

@@ -1,13 +1,4 @@
 import { sql } from "@vercel/postgres";
-import {
-  CustomerField,
-  CustomersTable,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  User,
-  Revenue,
-} from "./definitions";
 import { formatCurrency } from "./utils";
 // `cache` from react is used to dedupe requests
 // `unstable_cache` from next is used to dedupe *and* cache requests
@@ -16,6 +7,15 @@ import {
   unstable_noStore as nextCacheNoStore,
   // unstable_cache as nextCacheStore,
 } from "next/cache";
+import {
+  CustomerField,
+  CustomersTable,
+  Invoice,
+  InvoicesTable,
+  LatestInvoiceRaw,
+  Revenue,
+  User,
+} from "./zodSchemas";
 
 export const fetchRevenue = reactCache(async () => {
   nextCacheNoStore();
@@ -73,9 +73,9 @@ export const fetchCardsData = reactCache(async function () {
 
 const ITEMS_PER_PAGE = 6;
 export const fetchFilteredInvoices = reactCache(
-  async (query: string, currentPage: number) => {
+  async (query: string, currPage: number) => {
     nextCacheNoStore();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const offset = (currPage - 1) * ITEMS_PER_PAGE;
     const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
@@ -120,7 +120,7 @@ export const fetchInvoicesPages = reactCache(async (query: string) => {
 
 export const fetchInvoiceById = reactCache(async (id: string) => {
   nextCacheNoStore();
-  const data = await sql<InvoiceForm>`
+  const data = await sql<Omit<Invoice, "date">>`
       SELECT
         invoices.id,
         invoices.customer_id,
@@ -184,6 +184,8 @@ export const fetchFilteredCustomers = reactCache(async (query: string) => {
 
 export const getUser = reactCache(async (email: string) => {
   nextCacheNoStore();
-  const user = await sql`SELECT * from USERS where email=${email}`;
-  return user.rows[0] as User;
+  const user = await sql<User>`SELECT * from USERS where email=${email}`;
+
+  if (!user.rows.length) return null;
+  return user.rows[0];
 });
