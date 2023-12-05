@@ -1,3 +1,5 @@
+"use client";
+import { useFormState } from "react-dom";
 import Link from "next/link";
 import {
   CheckIcon,
@@ -7,13 +9,21 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import createInvoice from "@/app/dashboard/invoices/create/createInvoiceAction";
-import { fetchCustomers } from "@/app/lib/data";
+import { CreateInvoiceActionState } from "@/app/lib/types";
+import CreateInvoiceFormErrors from "./errors";
+import CreateInvoiceFormSubmitBtn from "./submitBtn";
 
-export default async function CreateInvoiceForm() {
-  const customers = await fetchCustomers();
+type Props = {
+  customers: { id: string; name: string }[];
+};
+
+export default function CreateInvoiceFormContent({ customers }: Props) {
+  const initState: CreateInvoiceActionState = { message: null, errors: {} };
+  const [state, dispatch] = useFormState(createInvoice, initState);
+
   return (
-    <form action={createInvoice}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+    <form action={dispatch}>
+      <div className="rounded-md bg-gray-50 space-y-2 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
@@ -25,7 +35,6 @@ export default async function CreateInvoiceForm() {
               name="customerId"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
-              required
             >
               <option value="" disabled>
                 Select a customer
@@ -103,6 +112,7 @@ export default async function CreateInvoiceForm() {
             </div>
           </div>
         </fieldset>
+        <CreateInvoiceFormErrors {...{ state }} />
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
@@ -111,7 +121,7 @@ export default async function CreateInvoiceForm() {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <CreateInvoiceFormSubmitBtn />
       </div>
     </form>
   );

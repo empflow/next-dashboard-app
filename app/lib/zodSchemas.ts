@@ -76,9 +76,9 @@ export type CustomerField = z.infer<typeof customerFieldSchema>;
 export const invoiceSchema = z.object({
   id: z.string(),
   customer_id: z.string(),
-  amount: z.coerce.number(),
-  date: z.string().optional(),
+  amount: z.coerce.number().gt(0),
   status: z.enum(["pending", "paid"]),
+  date: z.string().optional(),
 });
 export type Invoice = z.infer<typeof invoiceSchema>;
 
