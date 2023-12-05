@@ -184,6 +184,8 @@ export const fetchFilteredCustomers = reactCache(async (query: string) => {
 
 export const getUser = reactCache(async (email: string) => {
   nextCacheNoStore();
-  const user = await sql`SELECT * from USERS where email=${email}`;
-  return user.rows[0] as User;
+  const user = await sql<User>`SELECT * from USERS where email=${email}`;
+
+  if (!user.rows.length) return null;
+  return user.rows[0];
 });

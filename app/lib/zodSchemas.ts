@@ -87,3 +87,9 @@ export const invoiceFormSchema = invoiceSchema.omit({
   date: true,
 });
 export type InvoiceFormSchema = z.infer<typeof invoiceFormSchema>;
+
+export const signInCredentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+export type SignInCredentialsSchema = z.infer<typeof signInCredentialsSchema>;
