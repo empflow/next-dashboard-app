@@ -24,9 +24,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local env files. Files not appended with `.local.` will be committed!
 .env*.local
-.env
 
 # vercel
 .vercel
