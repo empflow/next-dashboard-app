@@ -13,10 +13,7 @@ export type InvoicesTableProps = {
 export default async function InvoicesTable({
   query,
   currPage,
-}: {
-  query: string;
-  currPage: number;
-}) {
+}: InvoicesTableProps) {
   const invoices = await fetchFilteredInvoices(query, currPage);
   let content: ReactNode;
 
