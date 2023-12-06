@@ -2,7 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 
 const authConfig = {
   pages: {
-    signIn: "/sign-in",
+    signIn: "/login",
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
