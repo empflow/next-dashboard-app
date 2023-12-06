@@ -6,6 +6,12 @@ import Image from "next/image";
 import heroDesktop from "@/public/hero-desktop.png";
 import heroMobile from "@/public/hero-mobile.png";
 
+export const metadata = {
+  title: {
+    absolute: "Acme Homepage",
+  },
+};
+
 export default function Page() {
   return (
     <div className="flex min-h-screen flex-col p-6">
