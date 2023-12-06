@@ -10,6 +10,7 @@ import {
 import {
   CustomerField,
   CustomersTable,
+  FormattedCustomersTable,
   Invoice,
   InvoicesTable,
   LatestInvoiceRaw,
@@ -154,9 +155,10 @@ export const fetchCustomers = reactCache(async () => {
   return customers;
 });
 
-export const fetchFilteredCustomers = reactCache(async (query: string) => {
-  nextCacheNoStore();
-  const data = await sql<CustomersTable>`
+export const fetchFilteredCustomers = reactCache(
+  async (query: string): Promise<FormattedCustomersTable[]> => {
+    nextCacheNoStore();
+    const data = await sql<CustomersTable>`
 		SELECT
 		  customers.id,
 		  customers.name,
@@ -174,14 +176,15 @@ export const fetchFilteredCustomers = reactCache(async (query: string) => {
 		ORDER BY customers.name ASC
 	  `;
 
-  const customers = data.rows.map((customer) => ({
-    ...customer,
-    total_pending: formatCurrency(customer.total_pending),
-    total_paid: formatCurrency(customer.total_paid),
-  }));
+    const customers = data.rows.map((customer) => ({
+      ...customer,
+      total_pending: formatCurrency(customer.total_pending),
+      total_paid: formatCurrency(customer.total_paid),
+    }));
 
-  return customers;
-});
+    return customers;
+  }
+);
 
 export const getUser = reactCache(async (email: string) => {
   nextCacheNoStore();

@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Search from "@/app/ui/search";
-import { FormattedCustomersTable } from "@/app/lib/zodSchemas";
+import { fetchFilteredCustomers } from "@/app/lib/data";
 
-export default async function CustomersTable({
-  customers,
-}: {
-  customers: FormattedCustomersTable[];
-}) {
+type Props = {
+  query?: string;
+};
+
+export default async function CustomersTableContent({ query = "" }: Props) {
+  const customers = await fetchFilteredCustomers(query);
   return (
     <div className="w-full">
       <h1 className={`mb-8 text-xl md:text-2xl`}>Customers</h1>
