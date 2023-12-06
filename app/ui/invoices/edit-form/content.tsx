@@ -1,5 +1,4 @@
 "use client";
-import { useFormState } from "react-dom";
 import {
   CheckIcon,
   ClockIcon,
@@ -8,22 +7,16 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { updateInvoice as updateInvoiceWithoutId } from "@/app/dashboard/invoices/[id]/edit/updateInvoiceAction";
-import { fetchCustomers, fetchInvoiceById } from "@/app/lib/data";
-import { notFound } from "next/navigation";
+import { updateInvoice as updateInvoiceAction } from "@/app/lib/actions/invoices/update";
+import { CustomerField, Invoice } from "@/app/lib/zodSchemas";
 
 type Props = {
-  id: string;
+  invoice: Omit<Invoice, "date">;
+  customers: CustomerField[];
 };
 
-export default async function EditInvoiceForm({ id }: Props) {
-  const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
-    fetchCustomers(),
-  ]);
-  if (!invoice) notFound();
-
-  const updateInvoice = updateInvoiceWithoutId.bind(null, invoice.id);
+export default function EditInvoiceFormContent({ customers, invoice }: Props) {
+  const updateInvoice = updateInvoiceAction.bind(null, invoice.id);
   return (
     <form action={updateInvoice}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
