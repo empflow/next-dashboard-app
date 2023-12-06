@@ -129,6 +129,7 @@ export const fetchInvoiceById = reactCache(async (id: string) => {
       FROM invoices
       WHERE invoices.id = ${id};
     `;
+  if (!data.rows.length) return null;
 
   const invoice = data.rows.map((invoice) => ({
     ...invoice,
