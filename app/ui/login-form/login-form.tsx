@@ -1,12 +1,12 @@
 "use client";
 import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
-import logInAction from "../../lib/actions/logIn";
+import logIn from "../../lib/actions/logIn";
 import LoginBtn from "./loginBtn";
 import LoginFormErrs from "./errs";
 
 export default function LoginForm() {
-  const [errMsg, dispatch] = useFormState(logInAction, null);
+  const [errMsg, dispatch] = useFormState(logIn, null);
 
   return (
     <form className="space-y-3" action={dispatch}>
