@@ -7,11 +7,10 @@ import {
   CurrencyDollarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@/app/ui/button";
-import createInvoice from "@/app/dashboard/invoices/create/createInvoiceAction";
 import { CreateInvoiceActionState } from "@/app/lib/types";
 import CreateInvoiceFormErrors from "./errors";
 import CreateInvoiceFormSubmitBtn from "./submitBtn";
+import createInvoice from "@/app/lib/actions/invoices/create";
 
 type Props = {
   customers: { id: string; name: string }[];

@@ -1,7 +1,7 @@
 "use client";
 import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
-import logIn from "../../lib/actions/logIn";
+import logIn from "../../lib/actions/auth/logIn";
 import LoginBtn from "./loginBtn";
 import LoginFormErrs from "./errs";
 
