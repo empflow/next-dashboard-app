@@ -1,5 +1,12 @@
 import "@/app/ui/global.css";
 
+export const metadata = {
+  title: {
+    default: "Acme",
+    template: "%s | Acme",
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
